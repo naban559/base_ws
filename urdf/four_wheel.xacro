@@ -1,0 +1,255 @@
+<?xml version="1.0" ?>
+<robot name="four_wheel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find four_wheel_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find four_wheel_description)/urdf/four_wheel.trans" />
+<xacro:include filename="$(find four_wheel_description)/urdf/four_wheel.gazebo" />
+<link name="base_footprint"/>
+   <joint name="base_footprint_to_base_link" type="fixed">
+  <parent link="base_footprint"/>
+  <child link="base_link"/>
+  <origin xyz="0 0 0.038" rpy="0 0 0"/>
+</joint>
+
+
+<!-- <link name="base_footprint" />
+
+<joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 0.04" rpy="0 0 0"/>
+</joint> -->
+
+<link name="base_link">
+  <inertial>
+    <origin xyz="0.0026974123905356157 -1.1245017637274454e-16 0.047702305929290284" rpy="0 0 0"/>
+    <mass value="0.7715932277556434"/>
+    <inertia ixx="0.003052" iyy="0.005476" izz="0.006505" ixy="-0.0" iyz="-0.0" ixz="-1.5e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="camera_1">
+  <inertial>
+    <origin xyz="0.0050000000000000044 0.0 0.0030000000000000027" rpy="0 0 0"/>
+    <mass value="0.002376"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.13 -0.0 -0.0925" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.13 -0.0 -0.0925" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/camera_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="ultra_front_1">
+  <inertial>
+    <origin xyz="0.0050000000000000044 0.0 0.008" rpy="0 0 0"/>
+    <mass value="0.009504"/>
+    <inertia ixx="2e-06" iyy="0.0" izz="1e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.13 -0.0 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/ultra_front_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  
+</link>
+
+<link name="ultra_rear_1">
+  <inertial>
+    <origin xyz="-0.0050000000000000044 0.0 0.008" rpy="0 0 0"/>
+    <mass value="0.009504"/>
+    <inertia ixx="2e-06" iyy="0.0" izz="1e-06" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.13 -0.0 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/ultra_rear_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+ 
+</link>
+
+<link name="lidar_1">
+  <inertial>
+    <origin xyz="-4.163336342344337e-17 3.2024308033418307e-18 0.010000000000000009" rpy="0 0 0"/>
+    <mass value="0.04665265090580843"/>
+    <inertia ixx="9e-06" iyy="9e-06" izz="1.5e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.1 -0.0 -0.06" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.1 -0.0 -0.06" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/lidar_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="left_front_1">
+  <inertial>
+    <origin xyz="0.0 0.014999999999999986 -6.5052130349130266e-18" rpy="0 0 0"/>
+    <mass value="0.14024069605624834"/>
+    <inertia ixx="6.7e-05" iyy="0.000112" izz="6.7e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.13 -0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/left_front_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.13 -0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/left_front_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="right_front_1">
+  <inertial>
+    <origin xyz="-2.7755575615628914e-17 -0.014999999999999986 7.806255641895632e-18" rpy="0 0 0"/>
+    <mass value="0.14024069605624834"/>
+    <inertia ixx="6.7e-05" iyy="0.000112" izz="6.7e-05" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.13 0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/right_front_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.13 0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/right_front_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="right_rear_1">
+  <inertial>
+    <origin xyz="-5.551115123125783e-17 -0.014999999999999986 -6.5052130349130266e-18" rpy="0 0 0"/>
+    <mass value="0.14024069605624834"/>
+    <inertia ixx="6.7e-05" iyy="0.000112" izz="6.7e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.13 0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/right_rear_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.13 0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/right_rear_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="left_rear_1">
+  <inertial>
+    <origin xyz="-5.551115123125783e-17 0.014999999999999986 7.806255641895632e-18" rpy="0 0 0"/>
+    <mass value="0.14024069605624834"/>
+    <inertia ixx="6.7e-05" iyy="0.000112" izz="6.7e-05" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.13 -0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/left_rear_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.13 -0.09 -0.0025" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find four_wheel_description)/meshes/left_rear_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rigid 1" type="fixed">
+  <origin xyz="0.13 0.0 0.0925" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="camera_1"/>
+</joint>
+
+<joint name="Rigid 2" type="fixed">
+  <origin xyz="0.13 0.0 0.0025" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="ultra_front_1"/>
+</joint>
+
+<joint name="Rigid 3" type="fixed">
+  <origin xyz="-0.13 0.0 0.0025" rpy="0 0 3.14159"/>
+  <parent link="base_link"/>
+  <child link="ultra_rear_1"/>
+</joint>
+
+
+<joint name="Rigid 4" type="fixed">
+  <origin xyz="0.1 0.0 0.06" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="lidar_1"/>
+</joint>
+
+<joint name="Revolute 5" type="continuous">
+  <origin xyz="0.13 0.09 0.0025" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="left_front_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="Revolute 6" type="continuous">
+  <origin xyz="0.13 -0.09 0.0025" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="right_front_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="Revolute 7" type="continuous">
+  <origin xyz="-0.13 -0.09 0.0025" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="right_rear_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+<joint name="Revolute 8" type="continuous">
+  <origin xyz="-0.13 0.09 0.0025" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="left_rear_1"/>
+  <axis xyz="0.0 1.0 0.0"/>
+</joint>
+
+</robot>
