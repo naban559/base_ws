@@ -1,0 +1,224 @@
+// ================= MOTOR PINS =================
+
+#define L_LPWM 5
+#define L_RPWM 6
+#define R_LPWM 9
+#define R_RPWM 10
+
+// ================= ENCODER PINS =================
+
+#define ENC_L_A 2
+#define ENC_L_B 4
+#define ENC_R_A 3
+#define ENC_R_B 7
+
+// ================= ROBOT PARAMETERS =================
+
+#define PPR 600              // CHANGE if needed
+#define WHEEL_DIAMETER 0.065 // 65mm wheel
+#define WHEEL_BASE 0.25      // Distance between wheels (meters) ADJUST
+#define SPEED 180
+
+volatile long leftCount = 0;
+volatile long rightCount = 0;
+
+float wheelCirc = WHEEL_DIAMETER * 3.1416;
+float pulsesPerMeter = PPR / wheelCirc;
+
+// ================= MENU =================
+
+void printMenu() {
+  Serial.println("======================================");
+  Serial.println("ROBOT CONTROL MENU");
+  Serial.println("--------------------------------------");
+  Serial.println("W  -> Forward 1 Meter");
+  Serial.println("S  -> Backward 1 Meter");
+  Serial.println("A  -> Rotate Left 90 deg");
+  Serial.println("D  -> Rotate Right 90 deg");
+  Serial.println("R  -> Rotate 180 deg");
+  Serial.println("X  -> STOP");
+  Serial.println("======================================");
+  Serial.println();
+}
+
+// ================= ENCODER ISR =================
+
+void leftEncoder() {
+  if (digitalRead(ENC_L_B))
+    leftCount++;
+  else
+    leftCount--;
+}
+
+void rightEncoder() {
+  if (digitalRead(ENC_R_B))
+    rightCount++;
+  else
+    rightCount--;
+}
+
+// ================= MOTOR FUNCTIONS =================
+
+void stopMotors() {
+  analogWrite(L_LPWM, 0);
+  analogWrite(L_RPWM, 0);
+  analogWrite(R_LPWM, 0);
+  analogWrite(R_RPWM, 0);
+}
+
+void moveForward() {
+  analogWrite(L_LPWM, SPEED);
+  analogWrite(L_RPWM, 0);
+  analogWrite(R_LPWM, SPEED);
+  analogWrite(R_RPWM, 0);
+}
+
+void moveBackward() {
+  analogWrite(L_LPWM, 0);
+  analogWrite(L_RPWM, SPEED);
+  analogWrite(R_LPWM, 0);
+  analogWrite(R_RPWM, SPEED);
+}
+
+void turnLeftMotion() {
+  analogWrite(L_LPWM, 0);
+  analogWrite(L_RPWM, SPEED);
+  analogWrite(R_LPWM, SPEED);
+  analogWrite(R_RPWM, 0);
+}
+
+void turnRightMotion() {
+  analogWrite(L_LPWM, SPEED);
+  analogWrite(L_RPWM, 0);
+  analogWrite(R_LPWM, 0);
+  analogWrite(R_RPWM, SPEED);
+}
+
+// ================= MOVE DISTANCE =================
+
+void moveDistance(float meters, bool forward) {
+
+  leftCount = 0;
+  rightCount = 0;
+
+  long target = meters * pulsesPerMeter;
+
+  if (forward)
+    moveForward();
+  else
+    moveBackward();
+
+  while (abs(leftCount) < target &&
+         abs(rightCount) < target) {
+
+    if (Serial.available()) {
+      char c = Serial.read();
+      if (c == 'X') {
+        stopMotors();
+        Serial.println("STOPPED!");
+        printMenu();
+        return;
+      }
+    }
+  }
+
+  stopMotors();
+  Serial.println("Done!");
+  printMenu();
+}
+
+// ================= ROTATION FUNCTION =================
+
+void rotateDegrees(float degrees) {
+
+  leftCount = 0;
+
+  float turnCirc = 3.1416 * WHEEL_BASE;
+  float turnDist = (degrees / 360.0) * turnCirc;
+
+  long target = turnDist * pulsesPerMeter;
+
+  turnRightMotion();
+
+  while (abs(leftCount) < target) {
+
+    if (Serial.available()) {
+      char c = Serial.read();
+      if (c == 'X') {
+        stopMotors();
+        Serial.println("STOPPED!");
+        printMenu();
+        return;
+      }
+    }
+  }
+
+  stopMotors();
+  Serial.println("Rotation Complete!");
+  printMenu();
+}
+
+// ================= SETUP =================
+
+void setup() {
+
+  Serial.begin(9600);
+  delay(1000);
+
+  pinMode(L_LPWM, OUTPUT);
+  pinMode(L_RPWM, OUTPUT);
+  pinMode(R_LPWM, OUTPUT);
+  pinMode(R_RPWM, OUTPUT);
+
+  pinMode(ENC_L_A, INPUT_PULLUP);
+  pinMode(ENC_L_B, INPUT_PULLUP);
+  pinMode(ENC_R_A, INPUT_PULLUP);
+  pinMode(ENC_R_B, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(ENC_L_A), leftEncoder, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(ENC_R_A), rightEncoder, CHANGE);
+
+  stopMotors();
+  printMenu();
+}
+
+// ================= LOOP =================
+
+void loop() {
+
+  if (Serial.available()) {
+
+    char cmd = Serial.read();
+
+    if (cmd == 'W') {
+      Serial.println("Moving Forward 1 Meter...");
+      moveDistance(1.0, true);
+    }
+
+    else if (cmd == 'S') {
+      Serial.println("Moving Backward 1 Meter...");
+      moveDistance(1.0, false);
+    }
+
+    else if (cmd == 'A') {
+      Serial.println("Rotating Left 90 Degrees...");
+      rotateDegrees(90);
+    }
+
+    else if (cmd == 'D') {
+      Serial.println("Rotating Right 90 Degrees...");
+      rotateDegrees(90);
+    }
+
+    else if (cmd == 'R') {
+      Serial.println("Rotating 180 Degrees...");
+      rotateDegrees(180);
+    }
+
+    else if (cmd == 'X') {
+      stopMotors();
+      Serial.println("STOPPED!");
+      printMenu();
+    }
+  }
+}
